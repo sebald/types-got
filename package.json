@@ -1,11 +1,12 @@
 {
   "name": "@types/got",
   "version": "9.4.0",
-  "dependencies": {
-    "@types/tough-cookie": "^2.3.4",
-    "@types/node": "^10.12.17"
-  },
+  "files": [
+    "index.d.ts"
+  ],
   "devDependencies": {
+    "@types/tough-cookie": "^2.3.4",
+    "@types/node": "^10.12.17",
     "@types/cookie": "^0.3.2",
     "@types/form-data": "^2.2.1",
     "@types/keyv": "^3.0.1",
