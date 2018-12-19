@@ -69,20 +69,13 @@ declare class StdError extends Error {
     response?: any;
 }
 
-declare const got: got.GotObject;
-
-interface InternalRequestOptions extends https.RequestOptions {
-    // Redeclare options with `any` type for allow specify types incompatible with http.RequestOptions.
-    timeout?: any;
-    agent?: any;
-}
-
-declare namespace got {
-    interface GotObject<T extends Buffer | string | object = string> extends GotFn<T>, Record<'get' | 'post' | 'put' | 'patch' | 'head' | 'delete', GotFn<T>> {
-        defaults: GotDefaults;
-        stream: GotStreamFn & Record<'get' | 'post' | 'put' | 'patch' | 'head' | 'delete', GotStreamFn>;
-        create: GotCreateFn;
-        mergeOptions: GotMergeOptionsFn;
+declare const got: got.GotFn &
+    Record<'get' | 'post' | 'put' | 'patch' | 'head' | 'delete', got.GotFn> &
+    {
+        defaults: got.GotDefaults;
+        stream: got.GotStreamFn & Record<'get' | 'post' | 'put' | 'patch' | 'head' | 'delete', got.GotStreamFn>;
+        create: got.GotCreateFn;
+        mergeOptions: got.GotMergeOptionsFn;
 
         RequestError: typeof RequestError;
         ReadError: typeof ReadError;
@@ -92,15 +85,22 @@ declare namespace got {
         UnsupportedProtocolError: typeof UnsupportedProtocolError;
         CancelError: typeof CancelError;
         TimeoutError: typeof TimeoutError;
-    }
+    };
 
-    interface GotFn<T extends Buffer | string | object> {
-        (url: GotUrl): GotPromise<T>;
-        (url: GotUrl, options: GotJSONOptions): GotPromise<any>;
-        (url: GotUrl, options: GotFormOptions<string>): GotPromise<T>;
-        (url: GotUrl, options: GotFormOptions<null>): GotPromise<Buffer>;
-        (url: GotUrl, options: GotBodyOptions<string>): GotPromise<T>;
-        (url: GotUrl, options: GotBodyOptions<null>): GotPromise<Buffer>;
+interface InternalRequestOptions extends https.RequestOptions {
+    // Redeclare options with `any` type for allow specify types incompatible with http.RequestOptions.
+    timeout?: any;
+    agent?: any;
+}
+
+declare namespace got {
+    interface GotFn {
+        <T extends Buffer | string | object = string>(url: GotUrl): GotPromise<T>;
+        <T extends Buffer | string | object = any>(url: GotUrl, options: GotJSONOptions): GotPromise<T>;
+        <T extends Buffer | string | object = string>(url: GotUrl, options: GotFormOptions<string>): GotPromise<T>;
+        <T extends Buffer | string | object = Buffer>(url: GotUrl, options: GotFormOptions<null>): GotPromise<T>;
+        <T extends Buffer | string | object = string>(url: GotUrl, options: GotBodyOptions<string>): GotPromise<T>;
+        <T extends Buffer | string | object = Buffer>(url: GotUrl, options: GotBodyOptions<null>): GotPromise<T>;
     }
 
     interface GotDefaults<T = any> {
@@ -128,7 +128,7 @@ declare namespace got {
 
     type GotStreamFn = (url: GotUrl, options?: GotOptions<string | null>) => GotEmitter & nodeStream.Duplex;
 
-    type GotCreateFn = <T extends Buffer | string | object = string, S extends GotOptions<string | null> = GotOptions<null>>(settings?: GotCreateSettings<S>) => GotObject<T>;
+    type GotCreateFn = <T extends Buffer | string | object = string, S extends GotOptions<string | null> = GotOptions<null>>(settings?: GotCreateSettings<S>) => typeof got;
 
     interface GotMergeOptionsFn {
         <T1, T2>(o1: T1, o2: T2): T1 & T2;

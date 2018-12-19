@@ -329,3 +329,25 @@ got('http://todomvc.com', {
 
 // Test got.TimeoutError.
 got('http://todomvc.com', {timeout: 1}).catch((err) => err instanceof got.TimeoutError);
+
+got<{ todos: string[]; }>('http://todomvc.com')
+.then(res => {
+    res.body.todos; // $ExpectType string[]
+});
+got.get<{ todos: string[]; }>('http://todomvc.com')
+.then(res => {
+    res.body.todos; // $ExpectType string[]
+});
+
+got<{ todos: string[]; }>('http://todomvc.com', { json: true })
+.then(res => {
+    res.body.todos; // $ExpectType string[]
+});
+got<{ todos: string[]; }>('http://todomvc.com', { form: true })
+.then(res => {
+    res.body.todos; // $ExpectType string[]
+});
+got<{ todos: string[]; }>('http://todomvc.com', { body: 'body' })
+.then(res => {
+res.body.todos; // $ExpectType string[]
+});
