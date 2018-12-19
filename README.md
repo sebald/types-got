@@ -1,2 +1,4 @@
-# types-got
+# @types/got
+
 Alternative @types/got
+
